@@ -132,7 +132,7 @@ public class Game extends Application {
 
         Sprite enemy = new Sprite();
         enemy.setImage("/images/enemy.png");
-        enemy.setPosition(1280, 720);
+        enemy.setPosition(1024, 670);
         enemy.render(gc);
 
         ArrayList<Sprite> moneybagList = new ArrayList<>();
