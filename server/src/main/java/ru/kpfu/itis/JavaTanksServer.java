@@ -6,13 +6,20 @@ import ru.kpfu.itis.server.listeners.EnterWithNameListener;
 
 public class JavaTanksServer extends GameServer {
     private static int PORT = 11903;
+    private static JavaTanksServer gameServer;
+
+    public static JavaTanksServer getInstance() {
+        if (gameServer == null) {
+            gameServer = new JavaTanksServer(PORT);
+        }
+        return gameServer;
+    }
 
     public static void main(String[] args) {
-        JavaTanksServer server = new JavaTanksServer(PORT);
+        gameServer = JavaTanksServer.getInstance();
         try {
-            server.registerListener(new EnterWithNameListener());
-
-            server.start();
+            gameServer.registerListener(new EnterWithNameListener());
+            gameServer.start();
         } catch (GameServerException e) {
             throw new IllegalStateException(e);
         }

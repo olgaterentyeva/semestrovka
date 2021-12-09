@@ -36,8 +36,10 @@ import java.util.Iterator;
 public class Game extends Application {
     private static Stage window;
     Scene scene, scene1;
+    private static JavaTanksServer gameServer;
 
     public static void main(String[] args) {
+        gameServer = JavaTanksServer.getInstance();
         launch();
     }
 
@@ -45,8 +47,8 @@ public class Game extends Application {
     public void start(Stage stage) throws Exception {
         window = stage;
 //<<<<<<< HEAD
-        window.setMinWidth(700);
-        window.setMinHeight(700);
+        window.setMinWidth(1280);
+        window.setMinHeight(720);
 //        FXMLLoader loader = new FXMLLoader();
 //        URL xmlUrl = getClass().getResource("/fxml/mainPage.fxml");
 //        loader.setLocation(xmlUrl);
@@ -60,12 +62,19 @@ public class Game extends Application {
         window.setTitle("A simple FXML Example");
         window.show();
     }
+
+    @FXML
+    private void registerUser() {
+
+    }
+
     @FXML
     private void exit(ActionEvent event) {
         event.consume();
         System.out.println("Good bye, Mother Fucker!");
         Platform.exit();
     }
+
     @FXML
     private void regScene(ActionEvent event) throws IOException {
         event.consume();
@@ -80,81 +89,79 @@ public class Game extends Application {
     private void gameCanvas(ActionEvent event) throws IOException {
         event.consume();
 
-        window.setTitle( "GAME" );
+        window.setTitle("GAME");
 
 
 //        Todo working with ImageViews
 //        Todo стрелять через ПРОБЕЛ
 
         Group root = new Group();
-        Scene theScene = new Scene( root );
+        Scene theScene = new Scene(root);
 
-        Canvas canvas = new Canvas( 512, 512 );
-        root.getChildren().add( canvas );
+        Canvas canvas = new Canvas(1280, 720);
+        root.getChildren().add(canvas);
 
-        ArrayList<String> input = new ArrayList<String>();
+        ArrayList<String> input = new ArrayList<>();
 
 
 //        ОЧЕРЕДИ ДВИЖЕНИЙ ТАНКА
         theScene.setOnKeyPressed(
-                new EventHandler<KeyEvent>()
-                {
-                    public void handle(KeyEvent e)
-                    {
-                        String code = e.getCode().toString();
-                        if ( !input.contains(code) )
-//                        System.out.println(code);
-                            input.add( code );
-                    }
+                e -> {
+                    String code = e.getCode().toString();
+                    if (!input.contains(code))
+                        input.add(code);
                 });
 
         theScene.setOnKeyReleased(
-                new EventHandler<KeyEvent>()
-                {
-                    public void handle(KeyEvent e)
-                    {
-                        String code = e.getCode().toString();
-                        input.remove( code );
-                    }
+                e -> {
+                    String code = e.getCode().toString();
+                    input.remove(code);
                 });
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        Font theFont = Font.font( "Helvetica", FontWeight.BOLD, 24 );
-        gc.setFont( theFont );
-        gc.setFill( Color.GREEN );
-        gc.setStroke( Color.BLACK );
+        Font theFont = Font.font("Helvetica", FontWeight.BOLD, 24);
+        gc.setFont(theFont);
+        gc.setFill(Color.GREEN);
+        gc.setStroke(Color.BLACK);
         gc.setLineWidth(1);
 
         Sprite player = new Sprite();
         player.setImage("/images/player.png");
-        player.setPosition(200, 0);
+        player.setPosition(0, 0);
 
         Sprite enemy = new Sprite();
         enemy.setImage("/images/enemy.png");
-        enemy.setPosition(100, 100);
+        enemy.setPosition(1280, 720);
         enemy.render(gc);
 
-        ArrayList<Sprite> moneybagList = new ArrayList<Sprite>();
+        ArrayList<Sprite> moneybagList = new ArrayList<>();
 
-        for (int i = 0; i < 15; i++)
-        {
-            Sprite moneybag = new Sprite();
-            moneybag.setImage("/images/moneybag.png");
-            double px = 350 * Math.random() + 50;
-            double py = 350 * Math.random() + 50;
-            moneybag.setPosition(px,py);
-            moneybagList.add( moneybag );
-        }
+        Thread thread = new Thread(() -> {
+            for (int i = 0; i < 20; i++) {
+                try {
+                    Thread.sleep(4000);
+                    Sprite moneybag = new Sprite();
+                    moneybag.setImage("/images/moneybag.png");
+                    double px = 1950 * Math.random() + 50;
+                    double py = 650 * Math.random() + 20;
+                    moneybag.setPosition(px, py);
+                    moneybagList.add(moneybag);
+                } catch (InterruptedException e) {
+                }
+            }
+        });
 
-        LongValue lastNanoTime = new LongValue( System.nanoTime() );
+        thread.start();
+        LongValue lastNanoTime = new LongValue(System.nanoTime());
 
         IntValue score = new IntValue(0);
 
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
                 // calculate time since last update.
-                if (score.value * 100 == 500) {
+                if (score.value * 100 >= 1000) {
+                   if (thread.isAlive())  thread.interrupt();
                     System.out.println("VICTORY");
                     System.exit(0);
                 }
@@ -187,7 +194,7 @@ public class Game extends Application {
                 }
 
                 // render
-                gc.clearRect(0, 0, 512, 512);
+                gc.clearRect(0, 0, 1280, 720);
                 player.render(gc);
                 enemy.render(gc);
 
@@ -205,9 +212,8 @@ public class Game extends Application {
     }
 
     @FXML
-    private void operator(ActionEvent event){
+    private void operator(ActionEvent event) {
         event.consume();
     }
-
 
 }
