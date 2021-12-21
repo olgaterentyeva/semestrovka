@@ -4,32 +4,19 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import ru.kpfu.itis.entities.Sprite;
 import ru.kpfu.itis.screens.NewScreen;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -161,7 +148,7 @@ public class Game extends Application {
             public void handle(long currentNanoTime) {
                 // calculate time since last update.
                 if (score.value * 100 >= 1000) {
-                   if (thread.isAlive())  thread.interrupt();
+                    if (thread.isAlive()) thread.interrupt();
                     System.out.println("VICTORY");
                     System.exit(0);
                 }
